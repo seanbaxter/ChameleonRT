@@ -2,6 +2,7 @@
 
 #include "gltf_types.h"
 #include "tiny_gltf.h"
+#include <stdexcept>
 
 // GLTF Buffer view/accessor utilities
 

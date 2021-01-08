@@ -1682,7 +1682,7 @@ class optional;
 struct nullopt_t 
 {
     struct init_t {};
-    static init_t init;
+    static inline init_t init {};
 
     explicit constexpr nullopt_t(init_t& /*unused*/) {}
 };
