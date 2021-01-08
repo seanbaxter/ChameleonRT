@@ -11,7 +11,7 @@ build$ make -j6
 build$  ./chameleonrt -vulkan ../bunny.obj
 ```
 
-I ported [hit.rchit](vulkan/hit.rchit) to [shaders.cxx](vulkan/shaders.cxx). See the attached compiled module [vulkan/circle_shaders.spv].
+I ported [hit.rchit](vulkan/hit.rchit) to [shaders.cxx](vulkan/shaders.cxx). See the attached compiled module [circle_shaders.spv](vulkan/circle_shaders.spv).
 
 The rendering should look like this:
 ![good](good.png)
