@@ -713,6 +713,28 @@ RenderStats RenderVulkan::render(const glm::vec3 &pos,
     return stats;
 }
 
+std::vector<char> read_file(const char* filename) {
+  FILE* f = fopen(filename, "r");
+
+  // Should really use stat here.
+  fseek(f, 0, SEEK_END);
+  size_t length = ftell(f);
+  fseek(f, 0, SEEK_SET);
+
+  std::vector<char> v;
+  v.resize(length);
+
+  // Read the data.
+  fread(v.data(), sizeof(char), length, f);
+
+  // Close the file.
+  fclose(f);
+
+  // Return the file.
+  return v;
+}
+
+
 void RenderVulkan::build_raytracing_pipeline()
 {
     // Maybe have the builder auto compute the binding numbers? May be annoying if tweaking
@@ -779,11 +801,16 @@ void RenderVulkan::build_raytracing_pipeline()
     auto closest_hit_shader =
         std::make_shared<vkrt::ShaderModule>(*device, hit_spv, sizeof(hit_spv));
 
+    auto circle_module = read_file("../vulkan/circle_shaders.spv");
+    auto circle_shader = std::make_shared<vkrt::ShaderModule>(*device,
+        (const uint32_t*)circle_module.data(), circle_module.size());
+
     rt_pipeline = vkrt::RTPipelineBuilder()
                       .set_raygen("raygen", raygen_shader)
                       .add_miss("miss", miss_shader)
                       .add_miss("occlusion_miss", occlusion_miss_shader)
-                      .add_hitgroup("closest_hit", closest_hit_shader)
+                      // .add_hitgroup("closest_hit", closest_hit_shader)
+                      .add_hitgroup("closest_hit", circle_shader, "_Z12rchit_shaderv")
                       .set_recursion_depth(1)
                       .set_layout(pipeline_layout)
                       .build(*device);
