@@ -20,7 +20,10 @@ add_library(render_vulkan
     vulkan_utils.cpp
     vulkanrt_utils.cpp
     vkdisplay.cpp
-    imgui_impl_vulkan.cpp)
+    imgui_impl_vulkan.cpp
+    shaders.cxx)
+
+set_source_files_properties(shaders.cxx PROPERTIES COMPILE_FLAGS -shader)
 
 set_target_properties(render_vulkan PROPERTIES
 	CXX_STANDARD 14

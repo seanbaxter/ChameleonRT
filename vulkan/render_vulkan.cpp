@@ -7,6 +7,8 @@
 #include <string>
 #include "spv_shaders_embedded_spv.h"
 #include "util.h"
+
+#include "shaders.hxx"
 #include <glm/ext.hpp>
 
 RenderVulkan::RenderVulkan(std::shared_ptr<vkrt::Device> dev)
@@ -779,10 +781,16 @@ void RenderVulkan::build_raytracing_pipeline()
     auto closest_hit_shader =
         std::make_shared<vkrt::ShaderModule>(*device, hit_spv, sizeof(hit_spv));
 
+    auto circle_shaders = 
+        std::make_shared<vkrt::ShaderModule>(*device, 
+            (const uint32_t*)shaders.spirv_data, shaders.spirv_size);
+
     rt_pipeline = vkrt::RTPipelineBuilder()
                       .set_raygen("raygen", raygen_shader)
+                      // .add_miss("miss", micircle_shaders, shaders.rmiss)
                       .add_miss("miss", miss_shader)
                       .add_miss("occlusion_miss", occlusion_miss_shader)
+                      // .add_hitgroup("closest_hit", circle_shaders, shaders.rchit)
                       .add_hitgroup("closest_hit", closest_hit_shader)
                       .set_recursion_depth(1)
                       .set_layout(pipeline_layout)
