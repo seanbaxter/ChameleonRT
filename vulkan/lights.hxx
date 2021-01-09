@@ -1,5 +1,4 @@
-#ifndef LIGHTS_GLSL
-#define LIGHTS_GLSL
+#pragma once
 
 // Quad-shaped light source
 struct QuadLight {
@@ -12,7 +11,7 @@ struct QuadLight {
 	vec4 v_y;
 };
 
-vec3 sample_quad_light_position(in const QuadLight light, vec2 samples) {
+inline vec3 sample_quad_light_position(QuadLight light, vec2 samples) {
 	return samples.x * light.v_x.xyz * light.v_x.w
 		+ samples.y * light.v_y.xyz * light.v_y.w + light.position.xyz;
 }
@@ -20,7 +19,7 @@ vec3 sample_quad_light_position(in const QuadLight light, vec2 samples) {
 /* Compute the PDF of sampling the sampled point p light with the ray specified by orig and dir,
  * assuming the light is not occluded
  */
-float quad_light_pdf(in const QuadLight light, in const vec3 p, in const vec3 orig, in const vec3 dir) {
+inline float quad_light_pdf(QuadLight light, vec3 p, vec3 orig, vec3 dir) {
 	float surface_area = light.v_x.w * light.v_y.w;
 	vec3 to_pt = p - dir;
 	float dist_sqr = dot(to_pt, to_pt);
@@ -31,9 +30,8 @@ float quad_light_pdf(in const QuadLight light, in const vec3 p, in const vec3 or
 	return dist_sqr / (n_dot_w * surface_area);
 }
 
-bool quad_intersect(in const QuadLight light, in const vec3 orig, in const vec3 dir,
-	out float t, out vec3 light_pos)
-{
+inline bool quad_intersect(QuadLight light, vec3 orig, vec3 dir, float& t, 
+	vec3& light_pos) {
 	float denom = dot(dir, light.normal.xyz);
 	if (denom >= EPSILON) {
 		t = dot(light.position.xyz - orig, light.normal.xyz) / denom;
@@ -50,6 +48,4 @@ bool quad_intersect(in const QuadLight light, in const vec3 orig, in const vec3 
 	}
 	return false;
 }
-
-#endif
 
